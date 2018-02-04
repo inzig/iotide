@@ -14,17 +14,18 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+var account = web3.personal.listAccounts[0];
+
 router.post('/store', function(req, res, next) {  
   var Iotide = authorize();  
-  account1 = '0x491485040cFD7436AB2f9ae7ff9b475A9f14Deee';
-  var response = Iotide.storePerson.sendTransaction (req.body.name , req.body.weight, req.body.height, req.body.age, {
-                  from: account1,
+  var response = Iotide.storePerson.sendTransaction (req.body.name, req.body.personData, {
+                  from: account,
                   gas:4000000 }, function (error, result){ 
                       //get callback from function which is your transaction key
                       if(!error){
                           // console.log(result);
                           var t = web3.eth.getTransaction(result);                          
-                          res.send(JSON.stringify(t));
+                          res.send(t);
                       } else{
                           console.log(error);
                           res.send(error);
@@ -33,16 +34,15 @@ router.post('/store', function(req, res, next) {
 });
 
 router.post('/getdata', function(req, res, next) {
-  console.log(req.body.name);
-  var Iotide = authorize();  
-  account1 = '0x491485040cFD7436AB2f9ae7ff9b475A9f14Deee';
+  // console.log(req.body.name);
+  var Iotide = authorize(); 
   var response = Iotide.getPerson(req.body.name, {
-                  from: account1,
+                  from: account,
                   gas:4000000 }, function (error, result){ 
                       //get callback from function which is your transaction key
                       if(!error){
                           // console.log(result);
-                          res.send(JSON.stringify(result));
+                          res.send(result);
                       } else{
                           console.log(error);
                           res.send('error');
@@ -51,8 +51,8 @@ router.post('/getdata', function(req, res, next) {
 });
 
 function authorize(){
-  web3.personal.unlockAccount(web3.personal.listAccounts[0],'123123123', 300);
-  web3.eth.defaultAccount = '0x491485040cFD7436AB2f9ae7ff9b475A9f14Deee';
+  web3.personal.unlockAccount(account,'123123123', 300);
+  web3.eth.defaultAccount = account;
   return web3.eth.contract([
     {
       "constant": false,
@@ -62,15 +62,7 @@ function authorize(){
           "type": "string"
         },
         {
-          "name": "_weight",
-          "type": "string"
-        },
-        {
-          "name": "_height",
-          "type": "string"
-        },
-        {
-          "name": "_age",
+          "name": "_person",
           "type": "string"
         }
       ],
@@ -96,29 +88,15 @@ function authorize(){
       "name": "getPerson",
       "outputs": [
         {
-          "name": "_weight",
-          "type": "string"
-        },
-        {
-          "name": "_height",
-          "type": "string"
-        },
-        {
-          "name": "_age",
+          "name": "",
           "type": "string"
         }
       ],
       "payable": false,
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
     }
-  ]).at('0x2cf952127b952b7dde782dda2c54d13690956f23');
+  ]).at('0x43a80e2fb4a9a4b7e395e0fdaab4364ea69acf91');
 }
 
 module.exports = router;
