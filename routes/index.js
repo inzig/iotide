@@ -14,6 +14,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.post('/getTransaction', function(req, res, next) {
+  var t = web3.eth.getTransaction(req.trx);
+  res.send(t);
+});
+
 var account = web3.personal.listAccounts[0];
 
 router.post('/store', function(req, res, next) {  
@@ -24,8 +29,8 @@ router.post('/store', function(req, res, next) {
                       //get callback from function which is your transaction key
                       if(!error){
                           // console.log(result);
-                          var t = web3.eth.getTransaction(result);                          
-                          res.send(t);
+                          // var t = web3.eth.getTransaction(result);                          
+                          res.send(result);
                       } else{
                           console.log(error);
                           res.send(error);
