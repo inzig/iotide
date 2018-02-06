@@ -15,7 +15,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/getTransaction', function(req, res, next) {
-  var t = web3.eth.getTransaction(req.trx);
+  // console.log(req.body.transaction);
+  var t = web3.eth.getTransaction(req.body.transaction);
   res.send(t);
 });
 
